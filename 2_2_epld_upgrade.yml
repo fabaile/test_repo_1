@@ -1,0 +1,30 @@
+---
+- name: Execute upgrade of EPLD on device
+  hosts: "{{ site_code }}"
+  connection: network_cli
+  gather_facts: false
+  vars:
+    upgrade_go: false
+    version_upgrade: false
+    space_ok: false
+    update_ok: false
+    md5_check_go: false
+    epld_primary_update_ok: false
+    epld_golden_update_ok: false
+    primary_install_output: 'unknown state'
+    golden_install_output: 'unknown state'
+    buffer_space: "{{ bufferspace | default(314572800) }}" # 300mb buffer in space, change if necessary
+    backup_server: "{{ bkp_server }}"
+    image_file_server: "{{ image_server | default('va10plvftp302.wellpoint.com/cisco/nexus/1-nxos-versions/nx9k') }}"
+    download_timeout: "{{ dl_timeout | default(5400) }}"
+
+  tasks:
+
+    # EPLD Download version_mapping.csv and check version mapping
+    - include_tasks: epld_download_and_check_version_mapping.yml
+
+    # EPLD Backup and save the running config to jumphost and NVRAM startup
+    - include_tasks: epld_backup_and_save_running_config.yml
+
+    # EPLD Execute upgrade on Primary and Golden regions and reload
+    - include_tasks: epld_execute_upgrade.yml
