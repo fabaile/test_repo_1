@@ -3,7 +3,7 @@
   cisco.nxos.nxos_command:
     commands:
       - command: 'install epld bootflash:{{ epld_file_name }} module all'
-        prompt: ']'
+        prompt: 'Do you want to continue? (yes/no) [n]:'
         answer: 'y'
   register: primary_install_output     
   async: 1200
@@ -24,7 +24,7 @@
   cisco.nxos.nxos_command:
     commands:
       - command: 'install epld bootflash:{{ epld_file_name }} module all golden'
-        prompt: ']'
+        prompt: 'Do you want to continue? (yes/no) [n]:'
         answer: 'y'
   register: golden_install_output
   async: 1200
