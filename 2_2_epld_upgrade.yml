@@ -1,6 +1,6 @@
 ---
 - name: Execute upgrade of EPLD on device
-  hosts: "{{ site_code }}"
+  hosts: all
   connection: network_cli
   gather_facts: false
   vars:
@@ -21,10 +21,10 @@
   tasks:
 
     # EPLD Download version_mapping.csv and check version mapping
-    - include_tasks: epld_download_and_check_version_mapping.yml
+    #- include_tasks: epld_download_and_check_version_mapping.yml
 
     # EPLD Backup and save the running config to jumphost and NVRAM startup
-    - include_tasks: epld_backup_and_save_running_config.yml
+    #- include_tasks: epld_backup_and_save_running_config.yml
 
     # EPLD Execute upgrade on Primary and Golden regions and reload
     - include_tasks: epld_execute_upgrade.yml
