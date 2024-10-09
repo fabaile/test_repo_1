@@ -17,6 +17,7 @@
     backup_server: "{{ bkp_server }}"
     image_file_server: "{{ image_server | default('va10plvftp302.wellpoint.com/cisco/nexus/1-nxos-versions/nx9k') }}"
     download_timeout: "{{ dl_timeout | default(5400) }}"
+    epld_file_name: n9000-epld.9.3.13.img
 
   tasks:
 
