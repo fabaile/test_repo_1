@@ -1,0 +1,63 @@
+# EPLD Upgrade Command for Install Mode in the Primary Region
+- name: Install new EPLD image on Primary Region (timed out in 20 min)
+  cisco.nxos.nxos_command:
+    commands:
+      - command: 'install epld bootflash:{{ epld_file_name }} module all'
+        prompt: ']'
+        answer: 'y'
+  register: primary_install_output     
+  async: 1200
+  poll: 300
+  vars:
+    ansible_command_timeout: 1200
+
+- name: reset the connection
+  meta: reset_connection
+
+- name: Set Primary Region Installation success true
+  set_fact:
+    epld_primary_update_ok: true
+  when: primary_install_output is search('success')
+
+# EPLD Upgrade Command for Install Mode on Golden Region
+- name: Install new EPLD image on Golden Region (timed out in 20 min)
+  cisco.nxos.nxos_command:
+    commands:
+      - command: 'install epld bootflash:{{ epld_file_name }} module all golden'
+        prompt: ']'
+        answer: 'y'
+  register: golden_install_output
+  async: 1200
+  poll: 300
+  vars:
+    ansible_command_timeout: 1200
+
+- name: reset the connection
+  meta: reset_connection
+
+- name: Set Golden Region Installation success true
+  set_fact:
+    epld_golden_update_ok: true
+  when: golden_install_output is search('success')
+
+- name: Inform upgrade has been successful
+  debug:
+    msg: "rc=0 (SUCCESS!! EPLD upgrade has been installed successfully on both Primary and Golden Regions)"
+  when: 
+    - epld_primary_update_ok
+    - epld_golden_update_ok
+
+- name: Fail run if verification didn't go through
+  fail:
+    msg: "rc=2004 (Failed!! Please check Installation log.)"
+  when: 
+    - not epld_primary_update_ok
+    - not epld_golden_update_ok
+
+- name: Show Primary Region install results
+  debug:
+    msg: primary_install_output
+
+- name: Show Golden Region install results
+  debug:
+    msg: golden_install_output
