@@ -1,0 +1,7 @@
+---
+collections:
+  - name: cisco.ios
+    version: 2.4.0
+  - name: cisco.nxos
+    version: 8.1.0
+  - name: community.general
